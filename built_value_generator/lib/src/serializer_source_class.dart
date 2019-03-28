@@ -281,7 +281,7 @@ class _\$${name}Serializer implements StructuredSerializer<$name> {
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current;
       iterator.moveNext();
       final dynamic value = iterator.current;
       switch (key) {
@@ -322,7 +322,7 @@ class _\$${name}Serializer implements PrimitiveSerializer<$name> {
   @override
   $name deserialize(Serializers serializers, Object serialized,
       {FullType specifiedType = FullType.unspecified}) =>
-    $name.valueOf(serialized as String);
+    $name.valueOf(serialized);
 }''';
       } else {
         // Generate maps between enum names and wire names.
@@ -353,7 +353,7 @@ class _\$${name}Serializer implements PrimitiveSerializer<$name> {
   @override
   $name deserialize(Serializers serializers, Object serialized,
       {FullType specifiedType = FullType.unspecified}) =>
-    $name.valueOf(_fromWire[serialized] ?? serialized as String);
+    $name.valueOf(_fromWire[serialized] ?? serialized);
 }''';
       }
     } else {
@@ -369,7 +369,7 @@ class _\$${name}Serializer implements PrimitiveSerializer<$name> {
         .join(', ');
     return 'isUnderspecified ? '
         'new ${name}Builder<$boundsOrObject>() : '
-        'serializers.newBuilder(specifiedType) as ${name}Builder';
+        'serializers.newBuilder(specifiedType)';
   }
 
   BuiltList<String> get _genericParametersUsedInFields => new BuiltList<String>(
@@ -436,19 +436,19 @@ class _\$${name}Serializer implements PrimitiveSerializer<$name> {
     return fields.map((field) {
       final fullType = field.generateFullType(
           compilationUnit, genericParameters.toBuiltSet());
-      final cast = field.generateCast(compilationUnit, _genericBoundsAsMap);
+//      final cast = field.generateCast(compilationUnit, _genericBoundsAsMap);
       if (field.builderFieldUsesNestedBuilder) {
         return '''
 case '${escapeString(field.wireName)}':
   result.${field.name}.replace(serializers.deserialize(
-      value, specifiedType: $fullType) $cast);
+      value, specifiedType: $fullType));
   break;
 ''';
       } else {
         return '''
 case '${escapeString(field.wireName)}':
   result.${field.name} = serializers.deserialize(
-      value, specifiedType: $fullType) $cast;
+      value, specifiedType: $fullType);
   break;
 ''';
       }
