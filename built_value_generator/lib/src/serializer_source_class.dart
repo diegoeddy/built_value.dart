@@ -369,7 +369,7 @@ class _\$${name}Serializer implements PrimitiveSerializer<$name> {
         .join(', ');
     return 'isUnderspecified ? '
         'new ${name}Builder<$boundsOrObject>() : '
-        'serializers.newBuilder(specifiedType)';
+        'serializers.newBuilder(specifiedType) as ${name}Builder';
   }
 
   BuiltList<String> get _genericParametersUsedInFields => new BuiltList<String>(
